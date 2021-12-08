@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @Entity
-@Table(name = "kairosUser",
+@Table(name = "kairos_user",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email")
         })
@@ -31,11 +31,8 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    private ERole role;
 
     public User() {
     }
@@ -45,7 +42,7 @@ public class User {
         this.password = password;
     }
 
-    public User(String email, String password, Role role) {
+    public User(String email, String password, ERole role) {
         this.email = email;
         this.password = password;
         this.role = role;

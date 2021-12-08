@@ -1,7 +1,10 @@
 package fr.tse.backendkairos.security.jwt;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 
+import io.jsonwebtoken.impl.TextCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +14,8 @@ import org.springframework.stereotype.Component;
 import fr.tse.backendkairos.security.services.UserDetailsImpl;
 
 import io.jsonwebtoken.*;
+
+import javax.annotation.PostConstruct;
 
 @Component
 public class JwtUtils {
@@ -25,9 +30,8 @@ public class JwtUtils {
   public String generateJwtToken(Authentication authentication) {
 
     UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
     return Jwts.builder().setSubject((userPrincipal.getUsername())).setIssuedAt(new Date())
-        .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)).signWith(SignatureAlgorithm.HS512, jwtSecret)
+        .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)).signWith(SignatureAlgorithm.HS512, jwtSecret.getBytes(StandardCharsets.UTF_8))
         .compact();
   }
 

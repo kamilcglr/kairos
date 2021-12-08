@@ -1,16 +1,15 @@
 package fr.tse.backendkairos.controllers;
 
 import fr.tse.backendkairos.models.ERole;
-import fr.tse.backendkairos.models.Role;
 import fr.tse.backendkairos.models.User;
 import fr.tse.backendkairos.payload.request.LoginRequest;
 import fr.tse.backendkairos.payload.request.SignupRequest;
 import fr.tse.backendkairos.payload.response.JwtResponse;
 import fr.tse.backendkairos.payload.response.MessageResponse;
-import fr.tse.backendkairos.repository.RoleRepository;
 import fr.tse.backendkairos.repository.UserRepository;
 import fr.tse.backendkairos.security.jwt.JwtUtils;
 import fr.tse.backendkairos.security.services.UserDetailsImpl;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Locale;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -32,9 +32,6 @@ public class AuthController {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
 
     @Autowired
     PasswordEncoder encoder;
@@ -61,6 +58,7 @@ public class AuthController {
                 role));
     }
 
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
@@ -74,32 +72,12 @@ public class AuthController {
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
 
-        String strRole = signUpRequest.getRole();
-        Role role;
+        ERole strRole = ERole.valueOf(signUpRequest.getRole().toUpperCase(Locale.ROOT));
 
-        if (strRole == null) {
-            role = roleRepository.findByName(ERole.USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        } else {
-            switch (strRole) {
-                case "admin" -> {
-                    role = roleRepository.findByName(ERole.ADMIN)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                }
-                case "manager" -> {
-                    role = roleRepository.findByName(ERole.MANAGER)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                }
-                default -> {
-                    role = roleRepository.findByName(ERole.USER)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                }
-            }
-        }
-
-        user.setRole(role);
+        user.setRole(strRole);
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
+
 }
