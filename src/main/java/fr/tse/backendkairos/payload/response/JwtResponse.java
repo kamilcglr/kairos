@@ -48,7 +48,6 @@ public class JwtResponse {
 		this.email = email;
 	}
 
-
 	public String getRole() {
 		return role;
 	}
