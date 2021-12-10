@@ -31,13 +31,21 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @NotNull
+    private String firstname;
+
+    @NotNull
+    private String lastname;
+
     @Enumerated(EnumType.STRING)
     private ERole role;
 
     public User() {
     }
 
-    public User(String email, String password) {
+    public User(String firstname, String lastname, String email, String password) {
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.email = email;
         this.password = password;
     }

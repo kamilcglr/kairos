@@ -9,7 +9,6 @@ import fr.tse.backendkairos.payload.response.MessageResponse;
 import fr.tse.backendkairos.repository.UserRepository;
 import fr.tse.backendkairos.security.jwt.JwtUtils;
 import fr.tse.backendkairos.security.services.UserDetailsImpl;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -69,6 +68,8 @@ public class AuthController {
 
         // Create new user's account
         User user = new User(
+                signUpRequest.getFirstname(),
+                signUpRequest.getLastname(),
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
 

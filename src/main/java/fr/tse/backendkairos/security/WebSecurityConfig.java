@@ -1,5 +1,8 @@
 package fr.tse.backendkairos.security;
 
+import fr.tse.backendkairos.security.jwt.AuthEntryPointJwt;
+import fr.tse.backendkairos.security.jwt.AuthTokenFilter;
+import fr.tse.backendkairos.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,13 +13,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import fr.tse.backendkairos.security.jwt.AuthEntryPointJwt;
-import fr.tse.backendkairos.security.jwt.AuthTokenFilter;
-import fr.tse.backendkairos.security.services.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -49,7 +48,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+		// Must have the same params in adonis
+		int saltLength = 16;
+		int hashLength = 32;
+		int parallelism = 1;
+		int memoryInKb = 1 << 12; // 10 MB
+		int iterations = 10;
+		return new Argon2PasswordEncoder(saltLength, hashLength, parallelism, memoryInKb, iterations);
 	}
 
 	@Override
