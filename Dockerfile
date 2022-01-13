@@ -1,6 +1,15 @@
+# Build AdonisJS
+FROM maven:3.8.4-openjdk-17-slim as builder
+# Set directory for all files
+WORKDIR /
+# Copy over package.json files
+COPY . ./
+# build
+RUN mvn clean package
+
 FROM openjdk:17
 ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
+COPY --from=builder ${JAR_FILE} app.jar
 ENV JWT_CONFIG_KEY=
 ENV PG_HOST=
 ENV PG_PORT=
