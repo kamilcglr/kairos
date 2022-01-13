@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "kairos.app.jwtSecret",
+      "type": "java.lang.String",
+      "description": "Description for kairos.app.jwtSecret."
+    },
+    {
+      "name": "kairos.app.jwtExpirationMs",
+      "type": "java.lang.String",
+      "description": "Description for kairos.app.jwtExpirationMs."
+    }
+  ] }
